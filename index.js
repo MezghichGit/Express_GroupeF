@@ -10,5 +10,6 @@ app.listen(85,
 const equipes = require("./equipes.json");
 
 app.get("/equipes",(request, response)=>{
-    response.send("<h1 align=center>Liste des équipes</h1>");
+    //response.send("<h1 align=center>Liste des équipes</h1>");
+    response.status(200).json(equipes);
 })

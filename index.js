@@ -77,8 +77,114 @@ app.delete('/equipes/:id', async (req,res) => {
           throw err
       } 
     })
+
+
+// Correction exo 
+
+app.get('/joueurs', (req,res) => {
+    db.collection('joueurs').find({}).toArray(function(err, docs
+    ){
+        if (err){
+            console.log(err)
+            throw err
+        }
+        res.status(200).json(docs)
+    })
+ })
+ 
+
+ app.get('/joueurs/:id', (req,res) => {
+    const id = parseInt(req.params.id)
+    db.collection('joueurs').find({id}).toArray(function(err, docs
+    ){
+        if (err){
+            console.log(err)
+            throw err
+        }
+        res.status(200).json(docs)
+    })
+ })
+
+ app.post('/joueurs', async (req,res) => {
+    try {
+      const joueurData = req.body
+      const joueur = await db.collection ('joueurs').insertOne(joueurData)
+      res.status(200).json(joueur)
+    } catch (err)
+      {
+              console.log(err)
+              throw err
+          }
+   })
+
+   app.put('/joueurs/:id', async (req,res) => {
+    try {
+      const id = parseInt(req.params.id)
+      const newjoueur = req.body
+      const oldjoueur = (await db.collection ('joueurs').find({id}).toArray())[0]
+      console.log(oldjoueur);
+      oldjoueur.nom=newjoueur.nom;
+      oldjoueur.numero=newjoueur.numero;
+       await db.collection ('joueurs').replaceOne({id},oldjoueur)
+ 
+      res.status(200).json(oldjoueur)
+    } catch (err)
+      {
+              console.log(err)
+              throw err
+          }
+ })
+
+ app.delete('/joueurs/:id', async (req,res) => {
+    try {
+      const id = parseInt(req.params.id)
+      const joueur = await db.collection('joueurs').deleteOne({id})
+      res.status(200).json(joueur)
+    } catch (err)
+      {
+              console.log(err)
+              throw err
+          }
+   })
+
+   // question2
+app.get('/equipes/:id/joueurs', (req,res) => {
+    const idEquipe = parseInt(req.params.id)
+    db.collection('joueurs').find({idEquipe}).toArray(function(err, docs
+    ){
+        if (err){
+            console.log(err)
+            throw err
+        }
+        res.status(200).json(docs)
+    })
+ })
+
+ // question3
+
+app.get('/joueurs/:id/equipe',async (req,res) => {
+    const id = parseInt(req.params.id)
+    const joueur =await  db.collection('joueurs').findOne({id});
+ 
+    const equipe =await db.collection('equipes').findOne({id:joueur.idEquipe});
+    res.status(200).json(equipe)
+    
+ })
+
+  //question4
+app.get('/joueurbyName/:nom', (req,res) => {
+    const nom = req.params.nom
+    db.collection('joueurs').find({nom}).toArray(function(err, docs
+    ){
+        if (err){
+            console.log(err)
+            throw err
+        }
+        res.status(200).json(docs)
+    })
+ })
 //Version 1 du projet : Data dans le fichier .json
-//const equipes = require("./equipes.json"); 
+//const equipes = require("./equipes.json");
 
 
 
